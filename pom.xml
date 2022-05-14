@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -23,7 +22,7 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<!--update 10.05.2022 M.Chechel-->
-		<!--Currently commented out sequrity plugings to simplify DB and model set up-->
+		<!--Currently, commented out security plugins to simplify DB and model set up-->
 
 		<!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
