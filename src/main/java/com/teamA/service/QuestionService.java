@@ -1,6 +1,9 @@
 package com.teamA.service;
 
 import com.teamA.model.Question;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +15,13 @@ import java.util.Optional;
  * */
 public interface QuestionService {
 
-    List<Question> getAllQuestions();
+    Page<Question> getAllQuestionsByPage(Pageable pageable);
 
     Optional<Question> getQuestionWithId(Long Id);
 
     Question createQuestion(Question question);
 
-    Question updateTask(Long id, Question updatedQuestion);
+    Question updateQuestion(Long id, Question updatedQuestion);
 
     void deleteQuestionById(Question q);
 

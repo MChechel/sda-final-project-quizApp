@@ -14,16 +14,18 @@ import java.util.Optional;
 @Service
 public interface AnswersService {
 
-    List<Answers> getAllAnswers(Long questionId);
+    List<Answers> getAllAnswers();
 
-    Answers getCorrectAnswer(Long questionId);
+    Answers getCorrectAnswer(List<Answers> answers);
 
     Answers createAnswer(Answers answers);
 
-    Answers updateAnswer(Long questionId,Long id, Answers updateAnswers);
+    Answers updateAnswer(Long id, Answers updateAnswers);
 
-    void deleteAnswerById(Long questionId,Answers answers);
+    Answers getLastInputAnswer();
 
-    void deleteAllAnswers(Long questionId);
+    void deleteAnswerById(Long id);
+
+    void deleteAllAnswers();
 
 }

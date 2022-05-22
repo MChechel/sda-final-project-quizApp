@@ -7,7 +7,9 @@ import com.teamA.service.AnswersService;
 import com.teamA.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,6 +26,9 @@ public class AnswersServiceImplementation implements AnswersService {
     private AnswersRepository answersRepository;
     private QuestionService questionService;
 
+
+
+
     @Autowired
     public AnswersServiceImplementation(AnswersRepository answersRepository,QuestionService questionService) {
         this.answersRepository = answersRepository;
@@ -31,27 +36,25 @@ public class AnswersServiceImplementation implements AnswersService {
 
     }
 
+    // temporary!
     @Override
-    public List<Answers> getAllAnswers(Long questionId) {
-        List<Answers> allAnswersForOneQuestion =  questionService.getQuestionWithId(questionId).get().getAnswers().stream().collect(Collectors.toList());
-        return allAnswersForOneQuestion;
+    public List<Answers> getAllAnswers(){
+        List<Answers> anw = new ArrayList<>();
+        answersRepository.findAll().forEach(anw::add);
+        return anw;
     }
 
-    @Override
-    public Answers getCorrectAnswer(Long questionId) {
 
-        List<Answers> a = questionService.getQuestionWithId(questionId).get()
-                            .getAnswers();
+
+    public Answers getCorrectAnswer(List<Answers> allAnswers) {
         Answers correctAnswer = new Answers();
-        a.stream().forEach((answer)->{
+        allAnswers.stream().forEach((answer)->{
             if (answer.isCorrect()){
                 correctAnswer.setContent(answer.getContent());
                 correctAnswer.setId(answer.getId());
-                correctAnswer.setQuestionId(answer.getQuestionId());
                 correctAnswer.setCorrect(true);
             }
         });
-//        Optional<Answers> a = questionService.getQuestionWithId(questionId).get().getAnswers().stream().findFirst();
         try{
             if(!correctAnswer.getContent().isEmpty())return correctAnswer;
         }catch (NullPointerException nullE){
@@ -65,11 +68,15 @@ public class AnswersServiceImplementation implements AnswersService {
        answersRepository.save(answers);
        return answers;
     }
+    @Override
+    public Answers getLastInputAnswer(){
+        return answersRepository.findAll().iterator().next();
+    }
 
     @Override
-    public Answers updateAnswer(Long questionId, Long id, Answers updateAnswers) {
+    public Answers updateAnswer(Long id, Answers updateAnswers) {
         Optional<Answers> foundAnswer = (answersRepository.findById(id));
-        if(foundAnswer.isPresent()&&questionId==foundAnswer.get().getQuestionId()){
+        if(foundAnswer.isPresent()){
             Answers answer = foundAnswer.get();
             answer.setContent(updateAnswers.getContent());
             answer.setCorrect(updateAnswers.isCorrect());
@@ -81,12 +88,11 @@ public class AnswersServiceImplementation implements AnswersService {
     }
 
     @Override
-    public void deleteAnswerById(Long questionId, Answers answers) {
+    public void deleteAnswerById(Long id) {
 
     }
 
     @Override
-    public void deleteAllAnswers(Long questionId) {
-
+    public void deleteAllAnswers() {
     }
 }

@@ -14,14 +14,15 @@ public class Answers {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Long questionId;
+//    private Long questionId;
     private String content;
     private boolean isCorrect;
 
     public Answers(Long questionId, String content, boolean isCorrect) {
-        this.questionId = questionId;
+//        this.questionId = questionId;
         this.content = content;
         this.isCorrect = isCorrect;
+
     }
 
     public Answers() {

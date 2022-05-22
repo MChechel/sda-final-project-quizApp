@@ -4,7 +4,10 @@ import com.teamA.model.Question;
 import com.teamA.repository.QuestionRepository;
 import com.teamA.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +20,20 @@ import java.util.Optional;
  * */
 
 @Service
+@Transactional
 public class QuestionServiceImplementation implements QuestionService {
 
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
     @Autowired
     public QuestionServiceImplementation(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
 
+
     @Override
-    public List<Question> getAllQuestions() {
-        Iterable<Question> questions;
-        questions = questionRepository.findAll();
-        List<Question> results= new ArrayList<>();
-        questions.forEach(results::add);
-       return results;
+    public Page<Question> getAllQuestionsByPage(Pageable pageable) {
+        return questionRepository.findAll(pageable);
     }
 
     @Override
@@ -42,14 +43,13 @@ public class QuestionServiceImplementation implements QuestionService {
 
     @Override
     public Question createQuestion(Question question) {
-    questionRepository
-            .save(new Question(question.getContent(),question.getPoints(),question.getCorrectAnswer(),question.getAnswers()));
-    return question;
+    return questionRepository.save(question);
     }
 
     @Override
-    public Question updateTask(Long id, Question updatedQuestion) {
-        Optional<Question> foundQuestion = (questionRepository.findById(id));
+    public Question updateQuestion(Long id, Question updatedQuestion) {
+        Optional<Question> foundQuestion = getQuestionWithId(id);
+
         if(foundQuestion.isPresent()){
             Question question = foundQuestion.get();
             question.setContent(updatedQuestion.getContent());
