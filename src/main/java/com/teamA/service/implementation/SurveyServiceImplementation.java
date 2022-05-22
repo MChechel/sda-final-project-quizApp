@@ -21,7 +21,7 @@ public class SurveyServiceImplementation implements SurveyService {
 
     @Override
     public Survey createSurvey(Survey survey) {
-        surveyRepository.save(new Survey(survey.getDescription(),survey.getTitle(),survey.getQuestions()));
+        surveyRepository.save(survey);
         return survey;
     }
 
