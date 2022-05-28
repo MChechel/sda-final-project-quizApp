@@ -1,7 +1,5 @@
 package com.teamA.controller;
 
-
-import com.teamA.model.Question;
 import com.teamA.model.Survey;
 import com.teamA.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
