@@ -68,10 +68,11 @@ public class DataInit {
 
     private void initSurvey() {
         Survey survey = new Survey();
-        survey.setId(1l);
+        // not needed? auto generated id
+//        survey.setId(1l);
         survey.setDescription("The first created survey!");
         survey.setTitle("Title will be here!");
-        surveyService.createSurvey(survey);
+        surveyService.addSurvey(survey);
     }
 
     private void initAnswers() {

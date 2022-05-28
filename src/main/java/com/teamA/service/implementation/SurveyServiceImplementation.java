@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class SurveyServiceImplementation implements SurveyService {
-    private SurveyRepository surveyRepository;
+    private final SurveyRepository surveyRepository;
 
     @Autowired
     public SurveyServiceImplementation(SurveyRepository surveyRepository) {
@@ -20,24 +20,22 @@ public class SurveyServiceImplementation implements SurveyService {
     }
 
     @Override
-    public Survey createSurvey(Survey survey) {
+    public Survey addSurvey(Survey survey) {
         surveyRepository.save(survey);
         return survey;
     }
 
     @Override
     public Survey updateSurvey(Long id, Survey updatedSurvey) {
-//        Optional<Survey> foundSurvey = (surveyRepository.findById(id));
-//        if(foundSurvey.isPresent()) {
-//            Survey survey = foundSurvey.get();
-//            survey.setDescription(updatedSurvey.getDescription());
-//            survey.setTitle(updatedSurvey.getTitle());
-//            // to do: update whole list of questions? questions by id?
-//            survey.setQuestions();
-//            return surveyRepository.save(survey);
-//        }else {
+        Optional<Survey> foundSurvey = (surveyRepository.findById(id));
+        if(foundSurvey.isPresent()) {
+            Survey survey = foundSurvey.get();
+            survey.setTitle(updatedSurvey.getTitle());
+            survey.setDescription(updatedSurvey.getDescription());
+            return surveyRepository.save(survey);
+        }else {
         return null;
-//        }
+        }
     }
 
     @Override
