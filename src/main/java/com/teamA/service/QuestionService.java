@@ -27,4 +27,6 @@ public interface QuestionService {
 
     void deleteAllQuestions();
 
+    List<Question> getAllQuestions();
+
 }

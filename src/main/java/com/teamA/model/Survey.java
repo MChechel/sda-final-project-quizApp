@@ -19,22 +19,22 @@ public class Survey {
 
     private String description;
 
+//    @OneToMany
+//    private List<Questions> questions;
+
     // date of time
 
     // unique link
 
-//    @OneToMany
-//    @JoinColumn(name = "surveyId", referencedColumnName = "id")
-//    private List<Question> questions;
-@OneToOne
-private User user;
+//    @OneToOne
+//    private User user;
 
-//    public Survey(String title, String description, List<Question> questions) {
-//        this.title = title;
-//        this.description = description;
-////        this.questions = questions;
-//    }
-//
-//    public Survey() {
-//    }
+    public Survey(String title, String description) {
+        this.title = title;
+        this.description = description;
+//        this.questions = questions;
+    }
+
+    public Survey() {
+    }
 }

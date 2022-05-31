@@ -52,7 +52,7 @@ public class DataInit {
 
         List<Answers> optionalAnswers = answersService.getAllAnswers();
 
-        Optional<Survey> optionalSurvey = surveyService.getSurveyById(4l);
+        Optional<Survey> optionalSurvey = surveyService.getSurveyWithId(4l);
 
         Question newQuestion = new Question();
         newQuestion.setPoints(150);

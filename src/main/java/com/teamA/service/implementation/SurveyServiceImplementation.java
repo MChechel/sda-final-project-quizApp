@@ -4,10 +4,10 @@ import com.teamA.model.Survey;
 import com.teamA.repository.SurveyRepository;
 import com.teamA.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,14 +20,22 @@ public class SurveyServiceImplementation implements SurveyService {
     }
 
     @Override
+    public Page<Survey> getAllSurveysByPage(Pageable pageable) {
+        return surveyRepository.findAll(pageable);
+    }
+    @Override
+    public Optional<Survey> getSurveyWithId(Long id) {
+        return surveyRepository.findById(id);
+    }
+
+    @Override
     public Survey addSurvey(Survey survey) {
-        surveyRepository.save(survey);
-        return survey;
+        return surveyRepository.save(survey);
     }
 
     @Override
     public Survey updateSurvey(Long id, Survey updatedSurvey) {
-        Optional<Survey> foundSurvey = (surveyRepository.findById(id));
+        Optional<Survey> foundSurvey = getSurveyWithId(id);
         if(foundSurvey.isPresent()) {
             Survey survey = foundSurvey.get();
             survey.setTitle(updatedSurvey.getTitle());
@@ -44,17 +52,4 @@ public class SurveyServiceImplementation implements SurveyService {
 
     }
 
-    @Override
-    public List<Survey> getAllSurveys() {
-        Iterable<Survey> surveys;
-        surveys = surveyRepository.findAll();
-        List<Survey> results= new ArrayList<>();
-        surveys.forEach(results::add);
-        return results;
-    }
-
-    @Override
-    public Optional<Survey> getSurveyById(Long id) {
-        return surveyRepository.findById(id);
-    }
 }
