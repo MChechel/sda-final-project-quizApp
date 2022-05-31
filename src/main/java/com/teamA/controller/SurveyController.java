@@ -63,7 +63,7 @@ public class SurveyController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Survey> updateSurvey(@PathVariable Long id, @RequestBody Survey updatedSurvey) {
         if (surveyService.updateSurvey(id, updatedSurvey) != null) {
             return new ResponseEntity<>(HttpStatus.OK);
