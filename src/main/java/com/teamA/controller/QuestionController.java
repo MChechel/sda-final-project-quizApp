@@ -10,6 +10,7 @@ package com.teamA.controller;
 import com.teamA.dtos.QuestionListDto;
 import com.teamA.model.Answers;
 import com.teamA.model.Question;
+import com.teamA.model.Survey;
 import com.teamA.service.AnswersService;
 import com.teamA.service.QuestionService;
 import com.teamA.service.implementation.QuestionServiceImplementation;
@@ -30,10 +31,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/questions")
+@CrossOrigin(origins = "http://localhost:4200")
 public class QuestionController {
 
-    private QuestionService questionService;
-    private AnswersService answersService;
+    private final QuestionService questionService;
+    private final AnswersService answersService;
 @Autowired
     public QuestionController(QuestionService questionService, AnswersService answersService) {
         this.questionService = questionService;
@@ -55,6 +57,7 @@ public class QuestionController {
         return ResponseEntity.ok(questionListDto);
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionWithId(@PathVariable("id") Long id){
         Optional<Question> question = questionService.getQuestionWithId(id);
@@ -64,6 +67,27 @@ public class QuestionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+    }
+
+    @GetMapping("/{id}/answers")
+    public ResponseEntity<List<Answers>> getAnswersOfQuestionWithId(@PathVariable("id") Long id){
+        Optional<Question> question = questionService.getQuestionWithId(id);
+        try{
+            return new ResponseEntity<List<Answers>>(question.get().getAnswers(),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{id}/answers/{answerId}")
+    public ResponseEntity<Answers> getAnswerWithIdOfQuestionWithId(@PathVariable("id") Long id,
+                                                                   @PathVariable("answerId") Long answerId){
+        Optional<Question> question = questionService.getQuestionWithId(id);
+        try{
+            return new ResponseEntity<Answers>(question.get().getAnswers().stream().filter(answers -> answers.getId()==answerId).findFirst().get(),HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
@@ -82,22 +106,6 @@ public class QuestionController {
         }
     }
 
-//    @PostMapping("/{questionId}/answer")
-//    public ResponseEntity<Answers> createAnswer(@RequestBody Answers newAnswer,
-//                                                @RequestParam(name="questionId", defaultValue = "1") long questionId){
-//        Question q = questionService.getQuestionWithId(questionId).get();
-//
-//        List<Answers> listOFAnswers = q.getAnswers();
-//        listOFAnswers.add(newAnswer);
-//        q.setAnswers(listOFAnswers);
-//        try{
-//        answersService.createAnswer(newAnswer);
-//        questionService.updateQuestion(questionId,q);
-//            return new ResponseEntity<>(HttpStatus.CREATED);
-//        }catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Question> updateQuestion(@PathVariable Long id,@RequestBody Question updatedQuestion){
@@ -180,7 +188,7 @@ public class QuestionController {
         try{
             Question question = questionService.getQuestionWithId(id).orElseThrow(() -> new IllegalArgumentException("Invalid user id: " + id));
             questionService.deleteQuestionById(question);
-            return new ResponseEntity<>(HttpStatus.GONE);
+            return new ResponseEntity<>(HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -190,9 +198,11 @@ public class QuestionController {
     public ResponseEntity<HttpStatus> deleteQuestions(){
         try{
             questionService.deleteAllQuestions();
-            return new ResponseEntity<>(HttpStatus.GONE);
+            return new ResponseEntity<>(HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 }

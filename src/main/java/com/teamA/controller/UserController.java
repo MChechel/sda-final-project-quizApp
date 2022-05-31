@@ -1,5 +1,6 @@
 package com.teamA.controller;
 
+import com.teamA.dtos.ResponseDTO;
 import com.teamA.model.User;
 import com.teamA.repository.UserRepository;
 import com.teamA.service.UserService;
@@ -9,7 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,4 +81,17 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    /*
+    * 28/05/22
+    * M.Chechel
+    * setting up user login
+    * */
+
+
+
+
+
+
 }

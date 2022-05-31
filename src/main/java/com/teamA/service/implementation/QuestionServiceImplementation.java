@@ -53,7 +53,7 @@ public class QuestionServiceImplementation implements QuestionService {
         if(foundQuestion.isPresent()){
             Question question = foundQuestion.get();
             question.setContent(updatedQuestion.getContent());
-            question.setCorrectAnswer(updatedQuestion.getCorrectAnswer());
+           // question.setCorrectAnswer(updatedQuestion.getCorrectAnswer());
             question.setPoints(updatedQuestion.getPoints());
             return questionRepository.save(question);
         }else{

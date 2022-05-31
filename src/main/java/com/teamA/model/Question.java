@@ -22,7 +22,7 @@ public class Question {
     private Long id;
     private String content; //the actual question will be stored here
     private int points; // amount of points for the question
-    private String correctAnswer;
+    //private String correctAnswer;
     //private String answers; // at the moment it is just a string...
     // now it is an object Answers
     @OneToOne
@@ -34,7 +34,7 @@ public class Question {
     public Question(String content, int points, String correctAnswer, List<Answers> answers) {
         this.content = content;
         this.points = points;
-        this.correctAnswer = correctAnswer;
+        //this.correctAnswer = correctAnswer;
         this.answers = answers;
 
     }

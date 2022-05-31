@@ -51,17 +51,19 @@ public class DataInit {
     private void initQuestion() {
 
         List<Answers> optionalAnswers = answersService.getAllAnswers();
-
         Optional<Survey> optionalSurvey = surveyService.getSurveyById(4l);
-
         Question newQuestion = new Question();
         newQuestion.setPoints(150);
         newQuestion.setContent("IT is the best question");
-        newQuestion.setCorrectAnswer("redundantField!");
         newQuestion.setAnswers(optionalAnswers);
         newQuestion.setSurvey(optionalSurvey.get());
-        System.out.println(optionalSurvey.get().getId());
-        questionService.createQuestion(newQuestion);
+//        System.out.println(optionalSurvey.get().getId());
+        Question newQuestion1 = new Question();
+        newQuestion1.setPoints(500);
+        newQuestion1.setContent("SecondQuestion!");
+        newQuestion1.setAnswers(optionalAnswers);
+
+        questionService.createQuestion(newQuestion1);
 //        answersService.deleteAllAnswers();
 
     }
@@ -99,8 +101,15 @@ public class DataInit {
         newUser.setLastName("Bond");
         newUser.setEmail("JB007@m6.uk");
         newUser.setPassword("007_theBest_007");
-
+        newUser.setRoles("USER");
         userService.createUser(newUser);
+        User newUser1 = new User();
+        newUser1.setFirstName("Name");
+        newUser1.setLastName("LastName");
+        newUser1.setEmail("user");
+        newUser1.setPassword("user");
+        newUser1.setRoles("DOES_NOT_MATTER");
+        userService.createUser(newUser1);
     }
 
 }

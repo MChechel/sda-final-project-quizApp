@@ -12,4 +12,8 @@ import java.util.Optional;
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     Optional<User> getUserById(Long id);
 
+    Optional<User> getUserByEmail(String email);
+
+
+
 }
