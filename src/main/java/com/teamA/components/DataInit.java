@@ -51,7 +51,9 @@ public class DataInit {
     private void initQuestion() {
 
         List<Answers> optionalAnswers = answersService.getAllAnswers();
-        Optional<Survey> optionalSurvey = surveyService.getSurveyById(4l);
+
+        Optional<Survey> optionalSurvey = surveyService.getSurveyWithId(4l);
+
         Question newQuestion = new Question();
         newQuestion.setPoints(150);
         newQuestion.setContent("IT is the best question");
@@ -70,10 +72,11 @@ public class DataInit {
 
     private void initSurvey() {
         Survey survey = new Survey();
-        survey.setId(1l);
+        // not needed? auto generated id
+//        survey.setId(1l);
         survey.setDescription("The first created survey!");
         survey.setTitle("Title will be here!");
-        surveyService.createSurvey(survey);
+        surveyService.addSurvey(survey);
     }
 
     private void initAnswers() {

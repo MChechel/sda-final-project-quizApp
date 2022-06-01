@@ -1,5 +1,6 @@
 package com.teamA.service.implementation;
 
+import com.teamA.model.Answers;
 import com.teamA.model.Question;
 import com.teamA.repository.QuestionRepository;
 import com.teamA.service.QuestionService;
@@ -69,5 +70,13 @@ public class QuestionServiceImplementation implements QuestionService {
     @Override
     public void deleteAllQuestions() {
         questionRepository.deleteAll();
+    }
+
+    // temporary!
+    @Override
+    public List<Question> getAllQuestions(){
+        List<Question> q = new ArrayList<>();
+        questionRepository.findAll().forEach(q::add);
+        return q;
     }
 }

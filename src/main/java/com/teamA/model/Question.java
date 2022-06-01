@@ -25,6 +25,7 @@ public class Question {
     //private String correctAnswer;
     //private String answers; // at the moment it is just a string...
     // now it is an object Answers
+
     @OneToOne
     private Survey survey;
     @OneToMany
