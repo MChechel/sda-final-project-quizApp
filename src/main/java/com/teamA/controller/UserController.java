@@ -41,10 +41,14 @@ public class UserController {
         }
     }
 
-    @PostMapping("/users")
+    @PostMapping("/create-account")
     public ResponseEntity<User> createUser(@RequestBody User newUser) {
+//        User createdUser = new User();
+//        createdUser.setEmail(newUser.getEmail());
+//        createdUser.setPassword(newUser.getPassword());
         try {
-            return new ResponseEntity<>(userServiceImplementation
+            return new ResponseEntity<>(
+                    userServiceImplementation
                     .createUser(newUser), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -83,11 +87,6 @@ public class UserController {
     }
 
 
-    /*
-    * 28/05/22
-    * M.Chechel
-    * setting up user login
-    * */
 
 
 

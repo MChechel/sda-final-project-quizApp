@@ -38,7 +38,7 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public User getUserByEmail(String email) {
-        User optionalUser = (userRepository.getUserByEmail(email).get());
+        User optionalUser = (userRepository.getUserByEmail(email));
         if(optionalUser!=null) {
             User user = new User();
             user.setFirstName(optionalUser.getFirstName());
