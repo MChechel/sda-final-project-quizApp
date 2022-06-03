@@ -4,15 +4,15 @@ import com.teamA.model.Survey;
 import com.teamA.repository.SurveyRepository;
 import com.teamA.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SurveyServiceImplementation implements SurveyService {
-    private SurveyRepository surveyRepository;
+    private final SurveyRepository surveyRepository;
 
     @Autowired
     public SurveyServiceImplementation(SurveyRepository surveyRepository) {
@@ -20,24 +20,30 @@ public class SurveyServiceImplementation implements SurveyService {
     }
 
     @Override
-    public Survey createSurvey(Survey survey) {
-        surveyRepository.save(survey);
-        return survey;
+    public Page<Survey> getAllSurveysByPage(Pageable pageable) {
+        return surveyRepository.findAll(pageable);
+    }
+    @Override
+    public Optional<Survey> getSurveyWithId(Long id) {
+        return surveyRepository.findById(id);
+    }
+
+    @Override
+    public Survey addSurvey(Survey survey) {
+        return surveyRepository.save(survey);
     }
 
     @Override
     public Survey updateSurvey(Long id, Survey updatedSurvey) {
-//        Optional<Survey> foundSurvey = (surveyRepository.findById(id));
-//        if(foundSurvey.isPresent()) {
-//            Survey survey = foundSurvey.get();
-//            survey.setDescription(updatedSurvey.getDescription());
-//            survey.setTitle(updatedSurvey.getTitle());
-//            // to do: update whole list of questions? questions by id?
-//            survey.setQuestions();
-//            return surveyRepository.save(survey);
-//        }else {
-        return null;
-//        }
+        Optional<Survey> foundSurvey = getSurveyWithId(id);
+        if(foundSurvey.isPresent()) {
+            Survey survey = foundSurvey.get();
+            survey.setTitle(updatedSurvey.getTitle());
+            survey.setDescription(updatedSurvey.getDescription());
+            return surveyRepository.save(survey);
+        }else {
+            return null;
+        }
     }
 
     @Override
@@ -47,16 +53,8 @@ public class SurveyServiceImplementation implements SurveyService {
     }
 
     @Override
-    public List<Survey> getAllSurveys() {
-        Iterable<Survey> surveys;
-        surveys = surveyRepository.findAll();
-        List<Survey> results= new ArrayList<>();
-        surveys.forEach(results::add);
-        return results;
+    public Optional<Survey> getSurveyById(Long id) {
+        return Optional.empty();
     }
 
-    @Override
-    public Optional<Survey> getSurveyById(Long id) {
-        return surveyRepository.findById(id);
-    }
 }

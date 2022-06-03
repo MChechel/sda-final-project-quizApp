@@ -41,11 +41,12 @@ public class UserController {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/create-account")
     public ResponseEntity<User> createUser(@RequestBody User newUser) {
-//        User createdUser = new User();
-//        createdUser.setEmail(newUser.getEmail());
-//        createdUser.setPassword(newUser.getPassword());
+        User createdUser = new User();
+        createdUser.setEmail(newUser.getEmail());
+        createdUser.setPassword(newUser.getPassword());
         try {
             return new ResponseEntity<>(
                     userServiceImplementation
@@ -73,6 +74,8 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<HttpStatus> deleteUserById(@PathVariable("id") Long id) {

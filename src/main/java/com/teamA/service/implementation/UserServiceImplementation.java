@@ -45,7 +45,7 @@ public class UserServiceImplementation implements UserService {
             user.setLastName(optionalUser.getLastName());
             user.setEmail(optionalUser.getEmail());
             user.setPassword(optionalUser.getPassword());
-            return userRepository.save(user);
+            return user;
         } else {
             return null;
         }
@@ -69,6 +69,11 @@ public class UserServiceImplementation implements UserService {
     @Override
     public Optional<User> getUserById(Long id) {
         return userRepository.getUserById(id);
+    }
+
+    @Override
+    public Optional<User> getUserWithEmail(String email) {
+        return Optional.empty();
     }
 
     @Override

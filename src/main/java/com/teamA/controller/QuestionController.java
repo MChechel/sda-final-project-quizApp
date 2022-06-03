@@ -13,9 +13,7 @@ import com.teamA.model.Question;
 import com.teamA.model.Survey;
 import com.teamA.service.AnswersService;
 import com.teamA.service.QuestionService;
-import com.teamA.service.implementation.QuestionServiceImplementation;
 import com.teamA.utils.QuizUtils;
-import org.springframework.beans.AbstractNestablePropertyAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,11 +34,14 @@ public class QuestionController {
 
     private final QuestionService questionService;
     private final AnswersService answersService;
+    private final SurveyController surveyController;
+
 @Autowired
-    public QuestionController(QuestionService questionService, AnswersService answersService) {
+    public QuestionController(QuestionService questionService, AnswersService answersService, SurveyController surveyController) {
         this.questionService = questionService;
         this.answersService = answersService;
-    }
+        this.surveyController = surveyController;
+}
 
 
     @GetMapping
@@ -48,11 +49,17 @@ public class QuestionController {
             @RequestParam(name="page", defaultValue = "0") int pageNum,
             @RequestParam(name = "items", defaultValue = QuizUtils.DEFAULT_ITEMS_PER_PAGE) int totItems,
             @RequestParam(name = "sort", defaultValue = "points") String sort,
-            @RequestParam(name = "order", defaultValue = "desc") String order
-            ){
+            @RequestParam(name = "order", defaultValue = "desc") String order,
+             @RequestParam(name = "surveyId", defaultValue = "0") Long surveyId
+
+    ){
+        System.out.println("I added new requestParameter for surveyId!!! and it is -" + surveyId);
         Page<Question> questionPage = questionService.getAllQuestionsByPage(PageRequest.of(pageNum, totItems, QuizUtils.getSortOfColumn(sort, order)));
         List<Question> questions = new ArrayList<>();
         questionPage.forEach(questions::add);
+        if(surveyId!=0){
+        questions=questions.stream().filter((q)->q.getSurvey().getId()==surveyId).collect(Collectors.toList());
+        }
         QuestionListDto questionListDto = new QuestionListDto(questions, pageNum, questionPage.getTotalElements());
         return ResponseEntity.ok(questionListDto);
     }
@@ -92,13 +99,12 @@ public class QuestionController {
 
     @PostMapping
     public ResponseEntity<Question> createQuestion(@RequestBody Question newQuestion,
-                                                   @RequestParam(name="answersAmount", defaultValue = "2") int answersAmount){
+                                                   @RequestParam(name="answersAmount", defaultValue = "2") int answersAmount,
+                                                   @RequestParam(name = "surveyId", defaultValue = "1") Long surveyId){
         List<Answers> answerList = new ArrayList<>();
-//        for (Answers a : answers){
-//            answerList.add(new Answers());
-//            answersController.createAnswer(new Answers());
-//        }
-
+        Survey survey = this.surveyController.getSurveyById(surveyId).getBody();
+        System.out.println("post mapping in question - survey is "+survey+" where is is "+ surveyId);
+        newQuestion.setSurvey(survey);
         try{
             return new ResponseEntity<>(questionService.createQuestion(newQuestion), HttpStatus.CREATED);
         }catch (Exception e){
