@@ -14,6 +14,8 @@ import java.util.Optional;
 @Service
 public interface AnswersService {
 
+    Answers getAnswerById(Long id);
+
     List<Answers> getAllAnswers();
 
     Answers getCorrectAnswer(List<Answers> answers);

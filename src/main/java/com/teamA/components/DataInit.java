@@ -39,10 +39,10 @@ public class DataInit {
 
     @PostConstruct
     public void initData() {
+        initUser();
         initAnswers();
         initSurvey();
         initQuestion();
-        initUser();
     }
 
 
@@ -51,16 +51,8 @@ public class DataInit {
     private void initQuestion() {
 
         List<Answers> optionalAnswers = answersService.getAllAnswers();
-        Optional<Survey> optionalSurvey = surveyService.getSurveyWithId(4l);
+        Optional<Survey> optionalSurvey = surveyService.getSurveyWithId(5l);
         System.out.println("it is init file talking");
-        System.out.println(optionalSurvey.get());
-        Question newQuestion = new Question();
-        newQuestion.setPoints(150);
-        newQuestion.setContent("IT is the best question");
-        newQuestion.setAnswers(optionalAnswers);
-        newQuestion.setSurvey(optionalSurvey.get());
-
-//        System.out.println(optionalSurvey.get().getId());
         Question newQuestion1 = new Question();
         newQuestion1.setPoints(500);
         newQuestion1.setContent("SecondQuestion!");
@@ -69,7 +61,7 @@ public class DataInit {
         System.out.println("it is init file talking");
         System.out.println(newQuestion1);
         questionService.createQuestion(newQuestion1);
-//        answersService.deleteAllAnswers();
+        answersService.deleteAllAnswers();
 
     }
 
@@ -78,6 +70,7 @@ public class DataInit {
         survey.setId(1l);
         survey.setDescription("The first created survey!");
         survey.setTitle("Title will be here!");
+        survey.setUser(userService.getUserByEmail("user"));
         surveyService.addSurvey(survey);
     }
 

@@ -18,10 +18,6 @@ public interface SurveyService {
 
     void deleteSurveyById(Survey survey);
 
-
-    Optional<Survey> getSurveyById(Long id);
-
-
-
+    Survey getSurveyByUniqueCode(String uniqueCode);
 
 }

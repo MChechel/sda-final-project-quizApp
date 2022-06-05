@@ -56,9 +56,10 @@ public class UserController {
         }
     }
 
-    @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        if (userServiceImplementation.updateUser(id, updatedUser) != null) {
+    @PutMapping("/users")
+    public ResponseEntity<User> updateUser(@RequestParam(name = "email", defaultValue = "") String email, @RequestBody User updatedUser) {
+        System.out.println("Hello there - " + email);
+        if (userServiceImplementation.updateUser(email, updatedUser) != null) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

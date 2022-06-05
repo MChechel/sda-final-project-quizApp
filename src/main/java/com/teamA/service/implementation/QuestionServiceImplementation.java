@@ -2,6 +2,7 @@ package com.teamA.service.implementation;
 
 import com.teamA.model.Answers;
 import com.teamA.model.Question;
+import com.teamA.model.Survey;
 import com.teamA.repository.QuestionRepository;
 import com.teamA.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class QuestionServiceImplementation implements QuestionService {
 
     @Override
     public Question createQuestion(Question question) {
-    return questionRepository.save(question);
+        return questionRepository.save(question);
     }
 
     @Override
@@ -72,11 +73,10 @@ public class QuestionServiceImplementation implements QuestionService {
         questionRepository.deleteAll();
     }
 
-    // temporary!
     @Override
-    public List<Question> getAllQuestions(){
-        List<Question> q = new ArrayList<>();
-        questionRepository.findAll().forEach(q::add);
-        return q;
+    public void deleteAllQuestionsBySurvey(Survey survey) {
+            questionRepository.deleteQuestionBySurvey(survey);
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.teamA.service;
 
 import com.teamA.model.Question;
+import com.teamA.model.Survey;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,6 +28,8 @@ public interface QuestionService {
 
     void deleteAllQuestions();
 
-    List<Question> getAllQuestions();
+    void deleteAllQuestionsBySurvey(Survey survey);
+
+
 
 }

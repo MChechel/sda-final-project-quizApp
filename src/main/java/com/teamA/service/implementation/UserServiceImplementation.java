@@ -41,6 +41,7 @@ public class UserServiceImplementation implements UserService {
         User optionalUser = (userRepository.getUserByEmail(email));
         if(optionalUser!=null) {
             User user = new User();
+            user.setId(optionalUser.getId());
             user.setFirstName(optionalUser.getFirstName());
             user.setLastName(optionalUser.getLastName());
             user.setEmail(optionalUser.getEmail());
@@ -52,10 +53,10 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, User updatedUser) {
-        Optional<User> optionalUser = (userRepository.getUserById(id));
-        if(optionalUser.isPresent()) {
-            User user = optionalUser.get();
+    public User updateUser(String email, User updatedUser) {
+        User optionalUser = (userRepository.getUserByEmail(email));
+        if(optionalUser!=null) {
+            User user = optionalUser;
             user.setFirstName(updatedUser.getFirstName());
             user.setLastName(updatedUser.getLastName());
             user.setEmail(updatedUser.getEmail());

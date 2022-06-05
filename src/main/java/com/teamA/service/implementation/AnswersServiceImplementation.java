@@ -36,6 +36,11 @@ public class AnswersServiceImplementation implements AnswersService {
 
     }
 
+    @Override
+    public Answers getAnswerById(Long id) {
+        return answersRepository.findById(id).get();
+    }
+
     // temporary!
     @Override
     public List<Answers> getAllAnswers(){

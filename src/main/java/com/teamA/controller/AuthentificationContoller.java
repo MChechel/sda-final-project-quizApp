@@ -27,14 +27,12 @@ public class AuthentificationContoller {
     @CrossOrigin
     @PostMapping
     public ResponseEntity<ResponseDTO> login(@RequestBody UserDTO user){
-        System.out.println("Password and username before authentification:" + user.getPassword() +" - " + user.getPassword()  );
 
         manager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
                         user.getPassword())
         );
-        System.out.println("Password na dsername after authentification" + user.getPassword() +" - " + user.getPassword()  );
 
         final String sessionId = sessionRegistry.registerSession(user.getUsername());
         ResponseDTO response = new ResponseDTO();

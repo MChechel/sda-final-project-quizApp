@@ -2,8 +2,12 @@ package com.teamA.controller;
 
 
 import com.teamA.dtos.SurveyListDto;
+import com.teamA.model.Question;
 import com.teamA.model.Survey;
+import com.teamA.model.User;
+import com.teamA.service.QuestionService;
 import com.teamA.service.SurveyService;
+import com.teamA.service.UserService;
 import com.teamA.utils.QuizUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,16 +19,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/survey")
 public class SurveyController {
 
     private SurveyService surveyService;
+    private QuestionService questionService;
+    private UserService userService;
+
 
     @Autowired
-    public SurveyController(SurveyService surveyService) {
+    public SurveyController(SurveyService surveyService, UserService userService,QuestionService questionService) {
         this.surveyService = surveyService;
+        this.userService = userService;
+        this.questionService = questionService;
+
     }
 
 
@@ -41,6 +52,46 @@ public class SurveyController {
         return ResponseEntity.ok(surveyListDto);
     }
 
+    @GetMapping("/unique")
+    public ResponseEntity<SurveyListDto> getSurveysByUniqueCode(
+            @RequestParam(name="page", defaultValue = "0") int pageNum,
+            @RequestParam(name = "items", defaultValue = QuizUtils.DEFAULT_ITEMS_PER_PAGE) int totItems,
+            @RequestParam(name = "sort", defaultValue = "id") String sort,
+            @RequestParam(name = "order", defaultValue = "desc") String order,
+            @RequestParam(name = "uniqueCode", defaultValue = "0") String uniqueCode
+            ){
+        Page<Survey> surveyPage = surveyService.getAllSurveysByPage(PageRequest.of(pageNum, totItems, QuizUtils.getSortOfColumn(sort, order)));
+        List<Survey> surveys = new ArrayList<>();
+        surveyPage.forEach(surveys::add);
+
+
+        if(uniqueCode!="0"){
+            surveys=surveys.stream().filter((q)->q.getHashCode()==uniqueCode).collect(Collectors.toList());
+        }
+        SurveyListDto surveyListDto = new SurveyListDto(surveys, pageNum, surveyPage.getTotalElements());
+        return ResponseEntity.ok(surveyListDto);
+    }
+
+    @GetMapping("/personal")
+    public ResponseEntity<SurveyListDto> getSurveysByUser(
+            @RequestParam(name="page", defaultValue = "0") int pageNum,
+            @RequestParam(name = "items", defaultValue = QuizUtils.DEFAULT_ITEMS_PER_PAGE) int totItems,
+            @RequestParam(name = "sort", defaultValue = "id") String sort,
+            @RequestParam(name = "order", defaultValue = "desc") String order,
+            @RequestParam(name = "user", defaultValue = "user999") String user
+    ){
+        Page<Survey> surveyPage = surveyService.getAllSurveysByPage(PageRequest.of(pageNum, totItems, QuizUtils.getSortOfColumn(sort, order)));
+        List<Survey> surveys = new ArrayList<>();
+        System.out.println("method getSurveysByUser  and printing serveyPagable size - "+surveyPage.getTotalElements());
+        surveyPage.forEach(surveys::add);
+        if(user!="user999"){
+        //System.out.println("method getSurveysByUser  and printing the user login - "+user);
+            surveys=surveys.stream().filter((q)->q.getUser().getEmail().equals(user)).collect(Collectors.toList());
+        }
+        SurveyListDto surveyListDto = new SurveyListDto(surveys, pageNum, surveyPage.getTotalElements());
+        return ResponseEntity.ok(surveyListDto);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Survey> getSurveyById(@PathVariable("id") Long id) {
         Optional<Survey> survey = surveyService.getSurveyWithId(id);
@@ -52,8 +103,9 @@ public class SurveyController {
     }
 
     @PostMapping("/add")
-    //TODO: needs to be connected with question?
-    public ResponseEntity<Survey> addSurvey(@RequestBody Survey newSurvey) {
+    public ResponseEntity<Survey> addSurvey(@RequestParam(name = "user", defaultValue = "user999") String user,
+                                            @RequestBody Survey newSurvey) {
+        newSurvey.setUser( userService.getUserByEmail(user));
         try {
             return new ResponseEntity<>(surveyService
                     .addSurvey(newSurvey), HttpStatus.CREATED);
@@ -71,90 +123,16 @@ public class SurveyController {
         }
     }
 
-//    @PostMapping("/{id}/questions")
-//    public ResponseEntity<Survey> updateSurveyCreateQuestion(@PathVariable Long id, @RequestBody Question questions){
-//        Survey s = surveyService.getSurveyWithId(id).get();
-//        questionService.createQuestion(questions);
-//        List<Question> optionalQuestions = questionService.getAllQuestions();
-//        Question newQuestion = optionalQuestions.stream()
-//                .max(Comparator.comparing(Question::getId))
-//                .get();
-//        List<Question> questionList = s.getQuestions();
-//        questionList.add(newQuestion);
-//        s.setQuestions(questionList);
-//        if(SurveyService.updateSurvey(id, s)!=null){
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        }else{
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteSurveyById(@PathVariable("id") Long id) {
         try {
             Survey survey = surveyService.getSurveyWithId(id).orElseThrow(() -> new IllegalArgumentException("Invalid survey id: " + id));
+            questionService.deleteAllQuestionsBySurvey(survey);
             surveyService.deleteSurveyById(survey);
-            return new ResponseEntity<>(HttpStatus.GONE);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//
-//
-//    @GetMapping("/surveys")
-//    public ResponseEntity<List<Survey>> getAllSurveys(){
-//        List<Survey> surveys= surveyService.getAllSurveys();
-//        if (surveys.isEmpty()){
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        try{
-//            return new ResponseEntity<>(surveys,HttpStatus.OK);
-//        }catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//    }
-//
-//    @GetMapping("/surveys/{id}")
-//    public ResponseEntity<Survey> getSurveyById(@PathVariable("id") Long id){
-//        Optional<Survey> survey = surveyService.getSurveyById(id);
-//        try{
-//            return new ResponseEntity<Survey>(survey.get(),HttpStatus.OK);
-//        }catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//
-//    }
-//
-//    @PostMapping("/survey")
-//    public ResponseEntity<Survey> createSurvey(@RequestBody Survey newSurvey){
-//        try{
-//            return new ResponseEntity<>(surveyService
-//                    .createSurvey(newSurvey), HttpStatus.CREATED);
-//        }catch (Exception e){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    @PutMapping("/surveys/{id}")
-//    public ResponseEntity<Survey> updateSurvey(@PathVariable Long id,@RequestBody Survey updatedSurvey){
-//        if(surveyService.updateSurvey(id, updatedSurvey)!=null){
-//            return new ResponseEntity<>(HttpStatus.OK);
-//        }else{
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
-//
-//    @DeleteMapping("/surveys/{id}")
-//    public ResponseEntity<HttpStatus> deleteSurveyById(@PathVariable("id") Long id){
-//        try{
-//            Survey survey = surveyService.getSurveyById(id).orElseThrow(() -> new IllegalArgumentException("Invalid survey id: " + id));
-//            surveyService.deleteSurveyById(survey);
-//            return new ResponseEntity<>(HttpStatus.GONE);
-//        }catch(Exception e){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
 
 }

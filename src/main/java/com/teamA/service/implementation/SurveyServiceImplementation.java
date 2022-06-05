@@ -30,6 +30,7 @@ public class SurveyServiceImplementation implements SurveyService {
 
     @Override
     public Survey addSurvey(Survey survey) {
+        survey.setHashCode();
         return surveyRepository.save(survey);
     }
 
@@ -53,8 +54,11 @@ public class SurveyServiceImplementation implements SurveyService {
     }
 
     @Override
-    public Optional<Survey> getSurveyById(Long id) {
-        return Optional.empty();
+    public Survey getSurveyByUniqueCode(String uniqueCode) {
+        try{
+        return surveyRepository.getByHashCode(uniqueCode);
+        }catch(Exception e){
+            throw new NullPointerException("There is no survey with such code!");
+        }
     }
-
 }

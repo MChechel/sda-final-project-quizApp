@@ -4,7 +4,10 @@ package com.teamA.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 
 @Data
@@ -19,22 +22,30 @@ public class Survey {
 
     private String description;
 
-//    @OneToMany
-//    private List<Questions> questions;
+    private String hashCode;
 
-    // date of time
+    private long usageCounter;
 
-    // unique link
-
-//    @OneToOne
-//    private User user;
-
-    public Survey(String title, String description) {
+    public Survey(String title, String description, User user) {
         this.title = title;
         this.description = description;
-//        this.questions = questions;
+        this.hashCode =  new String(Base64.getEncoder().encode(UUID.randomUUID().toString().getBytes(StandardCharsets.US_ASCII)));
+        this.usageCounter = 0;
+        this.user = user;
     }
 
+    @OneToOne
+    private User user;
+
+
     public Survey() {
+    }
+
+    public void setHashCode(){
+        this.hashCode =  new String(Base64.getEncoder().encode(UUID.randomUUID().toString().getBytes(StandardCharsets.US_ASCII)));
+    }
+
+    private void increaseUsageCounter(){
+        this.usageCounter++;
     }
 }
